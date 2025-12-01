@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-status-service
+spec:
+  selector:
+    app: simple-status-service
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP

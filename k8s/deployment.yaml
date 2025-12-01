@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-status-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-status-service
+  template:
+    metadata:
+      labels:
+        app: simple-status-service
+    spec:
+      containers:
+        - name: simple-status-service
+          image: simple-status-service:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: simple-status-service-config
