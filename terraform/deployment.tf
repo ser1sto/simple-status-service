@@ -1,0 +1,43 @@
+resource "kubernetes_deployment" "simple_status_service" {
+  metadata {
+    name = "simple-status-service"
+    labels = {
+      app = "simple-status-service"
+    }
+  }
+
+  spec {
+    replicas = 2
+
+    selector {
+      match_labels = {
+        app = "simple-status-service"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "simple-status-service"
+        }
+      }
+
+      spec {
+        container {
+          name  = "simple-status-service"
+          image = "simple-status-service:local"
+          image_pull_policy = "Never"
+          port {
+            container_port = 8080
+          }
+
+          env_from {
+            config_map_ref {
+              name = kubernetes_config_map.simple_status_service_config.metadata[0].name
+            }
+          }
+        }
+      }
+    }
+  }
+}
