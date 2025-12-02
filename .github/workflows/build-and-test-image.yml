@@ -41,13 +41,13 @@ jobs:
 
       - name: Test /health endpoint
         run: |
-          echo "Testing /health... enpoint"
+          echo "Testing /health enpoint"
           curl -sSf http://localhost:8080/health
           echo
 
       - name: Test /info endpoint and APP_ENV=gha_test
         run: |
-          echo "Testing /info... endpoint"
+          echo "Testing /info endpoint"
           INFO_RESPONSE=$(curl -sSf http://localhost:8080/info)
           echo "$INFO_RESPONSE"
           echo "$INFO_RESPONSE" | grep -q '"environment":"gha_test"'
