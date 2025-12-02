@@ -1,0 +1,57 @@
+name: 🛠️ Build and Test Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t simple-status-service-ci .
+
+      - name: Run container with APP_ENV=gha_test
+        run: |
+          docker run -d --rm \
+            -p 8080:8080 \
+            -e APP_ENV=gha_test \
+            --name simple-status-service \
+            simple-status-service-ci
+
+      - name: Wait for service to start
+        run: |
+          echo "Waiting for service..."
+          for i in {1..20}; do
+            if curl -sSf http://localhost:8080/health > /dev/null; then
+              echo "Service is up"
+              exit 0
+            fi
+            echo "Not ready yet, retry $i..."
+            sleep 3
+          done
+          echo "Service did not become ready in time"
+          docker logs simple-status-service || true
+          exit 1
+
+      - name: Test /health endpoint
+        run: |
+          echo "Testing /health... enpoint"
+          curl -sSf http://localhost:8080/health
+          echo
+
+      - name: Test /info endpoint and APP_ENV=gha_test
+        run: |
+          echo "Testing /info... endpoint"
+          INFO_RESPONSE=$(curl -sSf http://localhost:8080/info)
+          echo "$INFO_RESPONSE"
+          echo "$INFO_RESPONSE" | grep -q '"environment":"gha_test"'
+
+      - name: Stop container
+        if: always()
+        run: docker stop simple-status-service || true
