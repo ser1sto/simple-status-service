@@ -23,6 +23,10 @@ resource "kubernetes_deployment" "simple_status_service" {
       }
 
       spec {
+        security_context {
+          run_as_non_root = true
+          run_as_user     = 10001
+        }
         container {
           name  = "simple-status-service"
           image = "simple-status-service:local"

@@ -12,6 +12,9 @@ spec:
       labels:
         app: simple-status-service
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
       containers:
         - name: simple-status-service
           image: simple-status-service:latest
