@@ -31,6 +31,18 @@ resource "kubernetes_deployment" "simple_status_service" {
           name  = "simple-status-service"
           image = "simple-status-service:local"
           image_pull_policy = "Never"
+          
+          resources {
+            limits = {
+              cpu    = "200m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "50m"
+              memory = "64Mi"
+            }
+          }
+
           port {
             container_port = 8080
           }
