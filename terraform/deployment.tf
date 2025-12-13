@@ -32,6 +32,24 @@ resource "kubernetes_deployment" "simple_status_service" {
           image = "simple-status-service:local"
           image_pull_policy = "Never"
           
+          readiness_probe {
+            http_get {
+              path = "/health"
+              port = 8080
+            }
+            initial_delay_seconds = 5
+            period_seconds        = 5
+          }
+
+          liveness_probe {
+            http_get {
+              path = "/health"
+              port = 8080
+            }
+            initial_delay_seconds = 10
+            period_seconds        = 10
+          }
+
           resources {
             limits = {
               cpu    = "200m"
