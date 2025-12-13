@@ -160,4 +160,6 @@ The project uses Docker Desktop with Kubernetes enabled. This choice keeps the s
 
 ### Approach and trade-offs
 The application is containerized with Docker and deployed to Kubernetes through Terraform.  
-To keep the workflow simple and fully local, the Deployment uses a local Docker image with ```image_pull_policy = "Never"```. Without it - k8s deployment was contantly trying to pull some external image resulting in ```ErrImagePull```.  
+The Kubernetes Deployment includes basic operational configuration such as non-root container execution, CPU and memory resource limits, and health probes.  
+
+To keep the workflow simple and fully local, the Deployment uses a local Docker image with ```image_pull_policy = "Never"```. Without it, the Kubernetes deployment was constantly trying to pull an external image, resulting in ```ErrImagePull```.
